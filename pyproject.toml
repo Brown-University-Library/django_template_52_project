@@ -5,7 +5,7 @@ description = "Template for creatign new Django projects."
 readme = "https://github.com/Brown-University-Library/django_template_42_project/blob/main/README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "Django~=4.2.0",
+    "Django~=5.2.0",
     "requests~=2.32.0",
     "python-dotenv~=1.1.0",
     "trio~=0.30.0",
