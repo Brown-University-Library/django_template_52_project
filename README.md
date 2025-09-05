@@ -39,7 +39,7 @@ $ git clone https://github.com/Brown-University-Library/django_template_52_proje
 $ uv run --python 3.12 ./django_template_52_project/update_project_and_app_references.py --target_dir "./django_template_52_project/" --new_project_name "x_project" --new_app_name "x_app"  # again, replace `x_project` and `x_app` with your project and app names
 
 ## setup the envar-settings
-$ cd ./x_project/
+$ cd ./x_project/  # again, this will be the project-name you chose
 $ cp ./config/dotenv_example_file.txt ../.env
 
 ## make the venv
