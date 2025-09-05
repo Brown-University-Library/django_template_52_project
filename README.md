@@ -56,7 +56,7 @@ That's it!
 About the migrations message -- again, you can do that later... Migrations are Django’s system for managing changes to your database schema. When you do run the migrations, do it like this:
 
 ```bash
-$ cd ./x_project_stuff/x_project/
+$ cd ./x_project_stuff/x_project/  # again, use your stuff/project names
 $ uv run ./manage.py migrate  # calling migrate this way auto-activates the venv
 ```
 
