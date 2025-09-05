@@ -6,7 +6,7 @@ readme = "https://github.com/Brown-University-Library/django_template_52_project
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "Django~=5.2.0",
-    "httpx~=0.28.0",
+    "httpx~=0.28.0",  # no current http requests; but here cuz we're switching to this from `requests`
     "python-dotenv~=1.1.0",
     "trio~=0.30.0",
 ]
