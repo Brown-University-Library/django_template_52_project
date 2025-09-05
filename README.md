@@ -21,7 +21,7 @@ Notes about the quick-start instructions...
 
 - The instructions below reference `x_project_stuff`, `x_project`, and `x_app`. In all cases replace with the name of your project, like: `isbn_api_project_stuff`, `isbn_api_project`, and `isbn_api_app`.
 
-- The `update_project_and_app_references.py` script ([link](https://github.com/Brown-University-Library/django_template_42_project/blob/main/update_project_and_app_references.py)) deletes the cloned `.git` directory (in addition to its main purpose to rename the project). Why? So you don't accidentally start building away and commit to the template repo. After this installation, creating a new git repo is one of the first things you should do.
+- The `update_project_and_app_references.py` script ([link](https://github.com/Brown-University-Library/django_template_52_project/blob/main/update_project_and_app_references.py)) deletes the cloned `.git` directory (in addition to its main purpose to rename the project). Why? So you don't accidentally start building away and commit to the template repo. After this installation, creating a new git repo is one of the first things you should do.
 
 - When you start the webapp via `runserver`, you'll get a message that there are migrations that need to be run, with instructions. You can do that later.
 
@@ -33,10 +33,10 @@ $ mkdir ./logs
 $ mkdir ./DBs
 
 ## get the project-code
-$ git clone https://github.com/Brown-University-Library/django_template_42_project.git
+$ git clone https://github.com/Brown-University-Library/django_template_52_project.git
 
 ## update project-name (line below is a single long line; clarifying in case it wraps)
-$ uv run --python 3.12 ./django_template_42_project/update_project_and_app_references.py --target_dir "./django_template_42_project/" --new_project_name "x_project" --new_app_name "x_app"  # again, replace `x_project` and `x_app` with your project and app names
+$ uv run --python 3.12 ./django_template_52_project/update_project_and_app_references.py --target_dir "./django_template_52_project/" --new_project_name "x_project" --new_app_name "x_app"  # again, replace `x_project` and `x_app` with your project and app names
 
 ## setup the envar-settings
 $ cd ./x_project/
@@ -61,7 +61,6 @@ $ uv run ./manage.py migrate  # calling migrate this way auto-activates the venv
 ```
 
 [uv_link]: <https://docs.astral.sh/uv/getting-started/installation/>
-[old]: <https://github.com/Brown-University-Library/django_template_42_project/tree/56b0bc3bc2211e50c418dbed7b588c2092dcc9e5>
 
 ---
 

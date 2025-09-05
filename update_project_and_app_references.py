@@ -13,9 +13,8 @@ import argparse
 import shutil
 from pathlib import Path, PosixPath
 
-
 ## constants --------------------------------------------------------
-REPO_PROJECT_NAME = 'django_template_42_project'  # raw git-clone name
+REPO_PROJECT_NAME = 'django_template_52_project'  # raw git-clone name
 OLD_PROJECT_NAME = 'foo_project'  # all the internal code project-references
 OLD_APP_NAME = 'foo_app'
 
@@ -29,9 +28,7 @@ def rename_top_level_directory(target_directory: Path, new_project_name: str) ->
     Called by run_updater().
     """
     if REPO_PROJECT_NAME in target_directory.name:
-        new_directory: Path = target_directory.with_name(
-            target_directory.name.replace(REPO_PROJECT_NAME, new_project_name)
-        )
+        new_directory: Path = target_directory.with_name(target_directory.name.replace(REPO_PROJECT_NAME, new_project_name))
         target_directory.rename(new_directory)
         return_dir: Path = new_directory
     else:
@@ -39,9 +36,7 @@ def rename_top_level_directory(target_directory: Path, new_project_name: str) ->
     return return_dir
 
 
-def rename_files_and_directories(
-    target_directory: Path, new_project_name: str, new_app_name: str
-) -> None:
+def rename_files_and_directories(target_directory: Path, new_project_name: str, new_app_name: str) -> None:
     """
     Renames any files and directories in the target directory.
     Called by run_updater.
@@ -113,9 +108,7 @@ def parse_args() -> None:
     Called by dundermain.
     """
     ## configure argument parser
-    parser = argparse.ArgumentParser(
-        description='Update project and app references in a directory.'
-    )
+    parser = argparse.ArgumentParser(description='Update project and app references in a directory.')
     parser.add_argument('--target_dir', type=str, required=True, help='The directory to update.')
     parser.add_argument('--new_project_name', type=str, required=True, help='The new project name.')
     parser.add_argument('--new_app_name', type=str, required=True, help='The new app name.')
@@ -145,9 +138,7 @@ def run_updater(target_directory: Path, new_project_name: str, new_app_name: str
     update_file_contents(target_directory, new_project_name, new_app_name)
     ## delete .git directory
     delete_git_directory(target_directory)
-    print(
-        f'Updated project and app references in ``{target_directory}`` to ``{new_project_name}`` and ``{new_app_name}``.'
-    )
+    print(f'Updated project and app references in ``{target_directory}`` to ``{new_project_name}`` and ``{new_app_name}``.')
     return
 
 

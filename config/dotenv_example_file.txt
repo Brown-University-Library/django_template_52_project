@@ -2,7 +2,7 @@
 ## standard project-level settings
 ## ============================================================================
 
-## for info on settings: <https://docs.djangoproject.com/en/4.2/ref/settings/>
+## for info on settings: <https://docs.djangoproject.com/en/5.2/ref/settings/>
 
 SECRET_KEY="example_secret_key"
 
@@ -43,7 +43,7 @@ LOG_PATH="../logs/foo_project.log"
 LOG_LEVEL="DEBUG"
 
 
-## https://docs.djangoproject.com/en/4.2/topics/cache/
+## https://docs.djangoproject.com/en/5.2/topics/cache/
 ## - TIMEOUT is in seconds (0 means don't cache); CULL_FREQUENCY defaults to one-third
 CACHES_JSON='
 {
@@ -64,7 +64,7 @@ CACHES_JSON='
 
 ## the envars below aren't currently used in this template, but are commonly used in our apps
 
-README_URL="https://github.com/birkin/django_template_42_project/blob/main/README.md"
+README_URL="https://github.com/birkin/django_template_52_project/blob/main/README.md"
 
 ## for localhost shib-testing
 TEST_META_DCT_JSON='{
