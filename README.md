@@ -70,7 +70,7 @@ $ uv run ./manage.py migrate  # calling migrate this way auto-activates the venv
 After the above one-time setup, for ongoing development...
 
 ```bash
-$ cd ./x_project_stuff/x_project
+$ cd ./x_project_stuff/x_project  # again, use your stuff/project names
 $ uv run ./manage.py runserver  # calling runserver this way auto-activates the venv
 ```
 
