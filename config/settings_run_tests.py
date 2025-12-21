@@ -185,7 +185,7 @@ LOGGING = {
             'propagate': False,
         },
         'foo_app': {
-            'handlers': ['logfile'],
+            'handlers': ['console'],
             'level': 'DEBUG',  # messages above this will get sent to the `logfile` handler
             'propagate': False,
         },
