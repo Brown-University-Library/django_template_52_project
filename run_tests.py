@@ -9,8 +9,16 @@ Usage examples:
     (method) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks.test_check_branch_non_main_raises
 """
 
-import argparse
 import os
+
+## set settings as early as possible --------------------------------
+is_running_on_github: bool = os.environ.get('GITHUB_ACTIONS', '').lower() == 'true'
+if is_running_on_github:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings_run_tests'
+else:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings'
+
+import argparse
 import sys
 from pathlib import Path
 
