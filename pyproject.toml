@@ -19,3 +19,4 @@ staging = [
 prod = [ 
     "mysqlclient~=2.2.0", 
     ]
+ci_tests = []

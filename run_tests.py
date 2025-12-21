@@ -1,9 +1,9 @@
 """
-Runs unittests for this repository.
+Runs tests for this webap.
 
 Usage examples:
-    uv run ./run_tests.py --help
     (all) uv run ./run_tests.py -v
+    (app) uv run ./run_tests.py -v foo_app
     (file) uv run ./run_tests.py -v tests.test_environment_checks
     (class) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks
     (method) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks.test_check_branch_non_main_raises
@@ -12,19 +12,22 @@ Usage examples:
 import argparse
 import os
 import sys
-import unittest
 from pathlib import Path
+
+import django
+from django.conf import settings  # type: ignore
+from django.test.utils import get_runner  # type: ignore
 
 
 def main() -> None:
     """
-    Discover and run unittests for this repository.
+    Discover and run tests for this webapp.
     - Uses standard library unittest (per AGENTS.md)
-    - Discovers tests under tests/ with pattern "test*.py"
-    - Sets top-level directory to the repository root so `lib/` is importable
+    - Uses Django's test runner so app-based tests (e.g., `foo_app/tests/`) are discovered
+    - Sets top-level directory to the webapp root so `lib/` is importable
     """
     ## set up argparser ---------------------------------------------
-    parser = argparse.ArgumentParser(description='Run repository unittests')
+    parser = argparse.ArgumentParser(description='Run webapp tests')
     parser.add_argument(
         '-v',
         '--verbose',
@@ -36,37 +39,27 @@ def main() -> None:
         nargs='*',
         help=(
             'Optional dotted test targets to run, e.g. '
-            '(file) `tests.test_environment_checks` or '
-            '(class) `tests.test_environment_checks.TestEnvironmentChecks` or '
-            '(method) `tests.test_environment_checks.TestEnvironmentChecks.test_check_branch_non_main_raises`'
+            '(app) `foo_app` or '
+            '(module) `foo_app.tests.test_error_check` or '
+            '(class/method) dotted paths under app tests'
         ),
     )
     ## parse args ---------------------------------------------------
     args = parser.parse_args()
-    ## Ensure repository root is importable (adds 'lib/', etc) ------
-    repo_root = Path(__file__).parent
-    sys.path.insert(0, str(repo_root))
-    ## Change working directory to repo root so relative discovery works
-    os.chdir(repo_root)
-    start_dir = 'tests'
-    loader = unittest.TestLoader()
-    if args.targets:
-        ## Load explicit targets provided on the command line -------
-        suite = unittest.TestSuite()
-        for target in args.targets:
-            suite.addTests(loader.loadTestsFromName(target))
-    else:
-        ## Default to discovery as before ---------------------------
-        suite = loader.discover(
-            start_dir=start_dir,
-            pattern='test*.py',
-            ## Avoid specifying top_level_dir to prevent importability check on start_dir
-        )
-    ## Run tests ------------------------------------------------------
+    ## Ensure webapp root is importable (adds 'lib/', etc) ------
+    webapp_root = Path(__file__).parent
+    sys.path.insert(0, str(webapp_root))
+    ## Change working directory to webapp root so relative discovery works
+    os.chdir(webapp_root)
+    ## Initialize Django and use Django's test runner -----------------
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+    django.setup()
     verbosity = 2 if args.verbose else 1
-    runner = unittest.TextTestRunner(verbosity=verbosity)
-    result: unittest.result.TestResult = runner.run(suite)
-    sys.exit(0 if result.wasSuccessful() else 1)
+    test_labels: list[str] = list(args.targets) if args.targets else []
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner(verbosity=verbosity, interactive=False)
+    failures = test_runner.run_tests(test_labels)
+    sys.exit(0 if failures == 0 else 1)
 
 
 if __name__ == '__main__':
