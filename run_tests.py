@@ -1,5 +1,5 @@
 """
-Runs unittests for this repository.
+Runs tests for this webap.
 
 Usage examples:
     (all) uv run ./run_tests.py -v
@@ -21,13 +21,13 @@ from django.test.utils import get_runner  # type: ignore
 
 def main() -> None:
     """
-    Discover and run unittests for this repository.
+    Discover and run tests for this webapp.
     - Uses standard library unittest (per AGENTS.md)
     - Uses Django's test runner so app-based tests (e.g., `foo_app/tests/`) are discovered
-    - Sets top-level directory to the repository root so `lib/` is importable
+    - Sets top-level directory to the webapp root so `lib/` is importable
     """
     ## set up argparser ---------------------------------------------
-    parser = argparse.ArgumentParser(description='Run repository unittests')
+    parser = argparse.ArgumentParser(description='Run webapp tests')
     parser.add_argument(
         '-v',
         '--verbose',
@@ -46,11 +46,11 @@ def main() -> None:
     )
     ## parse args ---------------------------------------------------
     args = parser.parse_args()
-    ## Ensure repository root is importable (adds 'lib/', etc) ------
-    repo_root = Path(__file__).parent
-    sys.path.insert(0, str(repo_root))
-    ## Change working directory to repo root so relative discovery works
-    os.chdir(repo_root)
+    ## Ensure webapp root is importable (adds 'lib/', etc) ------
+    webapp_root = Path(__file__).parent
+    sys.path.insert(0, str(webapp_root))
+    ## Change working directory to webapp root so relative discovery works
+    os.chdir(webapp_root)
     ## Initialize Django and use Django's test runner -----------------
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
