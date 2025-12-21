@@ -4,9 +4,9 @@ Runs unittests for this repository.
 Usage examples:
     (all) uv run ./run_tests.py -v
     (app) uv run ./run_tests.py -v foo_app
-    (file) uv run ./run_tests.py -v foo_app.tests.test_error_check
-    (class) uv run ./run_tests.py -v foo_app.tests.test_error_check.ErrorCheckTest
-    (method) uv run ./run_tests.py -v foo_app.tests.test_error_check.ErrorCheckTest.test_dev_errorcheck
+    (file) uv run ./run_tests.py -v tests.test_environment_checks
+    (class) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks
+    (method) uv run ./run_tests.py -v tests.test_environment_checks.TestEnvironmentChecks.test_check_branch_non_main_raises
 """
 
 import argparse
