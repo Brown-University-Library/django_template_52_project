@@ -1,15 +1,14 @@
 """
-Django settings for `run_tests.py`.
-
-TODO: experiment with a `from .settings import *` approach
+Django settings for `run_tests.py`, for github-ci.
 """
 
 import logging
 import pathlib
 
 ## load envars ------------------------------------------------------
-# dotenv_path = pathlib.Path(__file__).resolve().parent.parent.parent / '.env'
-# load_dotenv(find_dotenv(str(dotenv_path)), override=True)
+"""
+Not needed for github-ci.
+"""
 
 log = logging.getLogger(__name__)
 
@@ -20,12 +19,9 @@ log = logging.getLogger(__name__)
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 # log.debug( f'BASE_DIR, ``{BASE_DIR}``' )
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-3ory+ty87_wq8-21ki6d&a+x=z9_$2m(gr4@vxri@@^g7u!*oc'
 SECRET_KEY = 'abcd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -80,7 +76,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -89,7 +85,7 @@ DATABASES = {
 }
 
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -108,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -122,10 +118,10 @@ USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/tmp/'  # needed for collectstatic command
+STATIC_ROOT = '/tmp/'
 
 # Email
 SERVER_EMAIL = 'example@domain.edu'
@@ -138,13 +134,13 @@ BDR_API_FILE_PATH_ROOT = '/tmp/'
 """
 The two settings below prevent django from auto-running chmod on uploaded files
     (which can cause permission issues when using a shared volume)
-    see: https://docs.djangoproject.com/en/4.2/ref/settings/#file-upload-permissions
+    see: https://docs.djangoproject.com/en/5.2/ref/settings/#file-upload-permissions
 """
 FILE_UPLOAD_PERMISSIONS = None
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -185,11 +181,11 @@ LOGGING = {
             'propagate': False,
         },
         'foo_app': {
-            'handlers': ['console'],
+            'handlers': ['console'],  # for ci, just output to console
             'level': 'DEBUG',  # messages above this will get sent to the `logfile` handler
             'propagate': False,
         },
-        # 'django.db.backends': {  # re-enable to check sql-queries! <https://docs.djangoproject.com/en/4.2/ref/logging/#django-db-backends>
+        # 'django.db.backends': {  # re-enable to check sql-queries! <https://docs.djangoproject.com/en/5.2/ref/logging/#django-db-backends>
         #     'handlers': ['logfile'],
         #     'level': os.environ['LOG_LEVEL'],
         #     'propagate': False
