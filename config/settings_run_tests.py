@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bdr_uploader_hub_app.apps.BdrUploaderHubAppConfig',
+    'foo_app',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +63,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [f'{BASE_DIR}/bdr_uploader_hub_app/bdr_uploader_hub_app_templates'],
+        'DIRS': [f'{BASE_DIR}/foo_app/foo_app_templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -184,8 +184,8 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'bdr_uploader_hub_app': {
-            'handlers': ['console'],
+        'foo_app': {
+            'handlers': ['logfile'],
             'level': 'DEBUG',  # messages above this will get sent to the `logfile` handler
             'propagate': False,
         },
