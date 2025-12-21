@@ -26,18 +26,15 @@
   - If targets provided, pass them through to `run_tests()` (e.g., `foo_app`, `foo_app.tests.test_error_check`, or a dotted test path).
 - Exit with non-zero on failures as it does now.
 
-2) Keep `unittest`-style targeted execution as a fallback (optional)
-- If you prefer, keep ability to load explicit dotted test names via `unittest` loader when Django is not available. In this repo, using Django’s runner everywhere is simpler and avoids split logic.
+## future work -- outside of the scope of just getting `uv run ./run_tests.py` to work
 
-3) Update docs to reflect Django layout
+2) Update docs to reflect Django layout
 - In `AGENTS.md`, adjust the “How to run” tests section to emphasize:
   - Primary: `uv run ./manage.py test`.
   - Alternate/CI: `uv run ./run_tests.py` (now implemented via Django’s runner).
   - Note that tests live under app directories like `foo_app/tests/`, not a top-level `tests/` directory.
 
-## future work -- outside of the scope of just getting `uv run ./run_tests.py` to work
-
-4) GitHub CI workflow to run tests with `uv run ./run_tests.py`
+3) GitHub CI workflow to run tests with `uv run ./run_tests.py`
 - Add `.github/workflows/tests.yml` with the following high-level steps:
   - Checkout repo.
   - Setup Python 3.12 and uv (e.g., `astral-sh/setup-uv` or install via script).
@@ -51,7 +48,7 @@
 - Notes:
   - If you prefer not to place `.env` above the repo root in CI, you could instead set all required environment variables inline in the workflow and modify `settings.py` in the codebase to not assert the external `.env`. The above plan avoids code changes by copying the example dotenv file to the expected location.
 
-5) Local developer convenience (optional)
+4) Local developer convenience (optional)
 - Consider adding a `Makefile` target or `taskfile` script for:
   - `make test` → `uv run ./manage.py test`
   - `make test-ci` → runs the same steps as CI (including creating `../.env`, `../logs`, `../DBs`) then `uv run ./run_tests.py`.
