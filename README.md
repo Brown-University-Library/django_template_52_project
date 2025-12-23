@@ -1,5 +1,7 @@
 # purpose
 
+[![CI tests](https://github.com/Brown-University-Library/django_template_52_project/actions/workflows/ci_tests.yaml/badge.svg)](https://github.com/Brown-University-Library/django_template_52_project/actions/workflows/ci_tests.yaml)
+
 This is a template for new django projects -- to standardize on some nice features/practices, and to get up and running, locally, easily and quickly. It provides instructions for getting the template from GitHub, customizing it, starting the webapp, and lists a few things to try with the webapp running. Finally, it lists the nice features/practices, and also shows typical usage.
 
 on this page...
