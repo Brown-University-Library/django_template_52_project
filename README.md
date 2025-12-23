@@ -124,5 +124,6 @@ Next -- well, the sky's the limit!
 - Includes a default config-file for [ruff](https://docs.astral.sh/ruff/), a fast, extensible python linter/code-formatter that can integrate with many popular code editors such as VS Code, PyCharm, and others -- or be run from the command line.
 - Includes a `run_tests.py` script that runs the tests for this webapp -- compatible with github-ci.
 - Includes a `ci_tests.yaml` file for github-ci.
+- Includes a 'tests-passing' badge at the top of this README.md file, for convenient confirmation that the tests are passing.
 
 ---
