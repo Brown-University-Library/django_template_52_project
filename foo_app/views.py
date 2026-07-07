@@ -2,7 +2,6 @@ import datetime
 import json
 import logging
 
-import trio
 from django.conf import settings as project_settings
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
@@ -75,7 +74,7 @@ def version(request):
     log.debug('starting version()')
     rq_now = datetime.datetime.now()
     gatherer = GatherCommitAndBranchData()
-    trio.run(gatherer.manage_git_calls)
+    gatherer.manage_git_calls()
     info_txt = f'{gatherer.branch} {gatherer.commit}'
     context = version_helper.make_context(request, rq_now, info_txt)
     output = json.dumps(context, sort_keys=True, indent=2)

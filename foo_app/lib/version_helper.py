@@ -3,7 +3,6 @@ import logging
 import pathlib
 import pprint
 
-import trio
 from django.conf import settings
 
 log = logging.getLogger(__name__)
@@ -39,33 +38,32 @@ class GatherCommitAndBranchData:
     """
     Note:
     - Originally this class made two separate asyncronous subprocess calls to git.
-    - Now it reads the `.git/HEAD` file to get the commit and branch data, so it doesn't need to be asyncronous.
+    - Now it reads the `.git/HEAD` file to get the commit and branch data, so it doesn't need to be asynchronous.
     """
 
-    def __init__(self):
-        self.commit_data = ''
-        self.branch_data = ''
+    def __init__(self) -> None:
+        self.commit = ''
+        self.branch = ''
 
-    async def manage_git_calls(self):
+    def manage_git_calls(self) -> None:
         """
-        Triggers separate version and commit preparation concurrently.
-        - Originally this class made two separate asyncronous subprocess calls to git.
+        Triggers sequential version and commit preparation.
+        - Originally this class made two separate asynchronous subprocess calls to git.
         - Now it reads the `.git/HEAD` file to get both the commit and branch data (to avoid the `dubious ownership` issues),
-          so it no longer benefits from asyncronous calls, but keeping for reference.
+          so it no longer benefits from asynchronous calls.
         Called by views.version()
         """
         log.debug('manage_git_calls')
         results_holder_dct = {}  # receives git responses as they're produced
-        async with trio.open_nursery() as nursery:
-            nursery.start_soon(self.fetch_commit_data, results_holder_dct)
-            nursery.start_soon(self.fetch_branch_data, results_holder_dct)
+        self.fetch_commit_data(results_holder_dct)
+        self.fetch_branch_data(results_holder_dct)
         log.debug(f'final results_holder_dct, ```{pprint.pformat(results_holder_dct)}```')
         self.commit = results_holder_dct['commit']
         self.branch = results_holder_dct['branch']
         log.debug(f'self.branch, ``{self.branch}``')
         return
 
-    async def fetch_commit_data(self, results_holder_dct):
+    def fetch_commit_data(self, results_holder_dct: dict[str, str]) -> None:
         """
         Fetches commit-data by reading the `.git/HEAD` file (avoiding calling git via subprocess due to `dubious ownership` issue).
         Called by manage_git_calls()
@@ -93,7 +91,7 @@ class GatherCommitAndBranchData:
         results_holder_dct['commit'] = commit
         return
 
-    async def fetch_branch_data(self, results_holder_dct):
+    def fetch_branch_data(self, results_holder_dct: dict[str, str]) -> None:
         """
         Fetches branch-data by reading the `.git/HEAD` file (avoiding calling git via subprocess due to `dubious ownership` issue).
         Called by manage_git_calls()
