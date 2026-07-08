@@ -6,6 +6,7 @@ import tempfile
 from django.core.cache import cache
 from django.test import SimpleTestCase as TestCase
 from django.test.utils import override_settings
+from foo_app.lib import version_helper
 
 
 log = logging.getLogger(__name__)
@@ -23,6 +24,20 @@ class VersionTest(TestCase):
     """
     Checks version url.
     """
+
+    def test_make_branch_and_commit_cache_key_uses_full_base_dir_hash(self) -> None:
+        """
+        Checks that the version cache key uses the resolved base directory.
+        """
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            base_dir = pathlib.Path(tmpdirname)
+            unresolved_base_dir = base_dir / '..' / base_dir.name
+
+            base_cache_key = version_helper.make_branch_and_commit_cache_key(base_dir)
+            unresolved_cache_key = version_helper.make_branch_and_commit_cache_key(unresolved_base_dir)
+
+        self.assertTrue(base_cache_key.startswith('version_cache_key:'))
+        self.assertEqual(base_cache_key, unresolved_cache_key)
 
     def test_version_response_uses_git_head(self) -> None:
         """

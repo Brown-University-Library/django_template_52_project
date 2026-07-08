@@ -54,10 +54,13 @@ def get_branch_and_commit() -> tuple[str, str]:
 def make_branch_and_commit_cache_key(base_dir: pathlib.Path) -> str:
     """
     Builds a cache key for branch and commit data.
+    A simple key like `version_cache_key` should work for this endpoint, but including a hash of the full base path minimizes
+    collision risk, which is useful in a template project, and lets tests use separate temporary project directories.
     Called by: get_branch_and_commit()
     """
-    base_dir_hash = hashlib.sha256(str(base_dir).encode('utf-8')).hexdigest()
-    cache_key = f'foo_app:version:branch_and_commit:{base_dir_hash}'
+    full_base_dir = base_dir.expanduser().resolve(strict=False)
+    base_dir_hash = hashlib.md5(str(full_base_dir).encode('utf-8'), usedforsecurity=False).hexdigest()
+    cache_key = f'version_cache_key:{base_dir_hash}'
     return cache_key
 
 
