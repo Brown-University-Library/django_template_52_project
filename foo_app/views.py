@@ -7,7 +7,6 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from foo_app.lib import version_helper
 from django.urls import reverse
-from foo_app.lib.version_helper import GatherCommitAndBranchData
 
 
 log = logging.getLogger(__name__)
@@ -73,9 +72,8 @@ def version(request):
     """
     log.debug('starting version()')
     rq_now = datetime.datetime.now()
-    gatherer = GatherCommitAndBranchData()
-    gatherer.manage_git_calls()
-    info_txt = f'{gatherer.branch} {gatherer.commit}'
+    branch, commit = version_helper.get_branch_and_commit()
+    info_txt = f'{branch} {commit}'
     context = version_helper.make_context(request, rq_now, info_txt)
     output = json.dumps(context, sort_keys=True, indent=2)
     log.debug(f'output, ``{output}``')

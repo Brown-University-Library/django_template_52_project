@@ -1,7 +1,6 @@
 import datetime
 import logging
 import pathlib
-import pprint
 
 from django.conf import settings
 
@@ -34,87 +33,30 @@ def make_context(request, rq_now, info_txt):
     return context
 
 
-class GatherCommitAndBranchData:
+def get_branch_and_commit() -> tuple[str, str]:
     """
-    Note:
-    - Originally this class made two separate asyncronous subprocess calls to git.
-    - Now it reads the `.git/HEAD` file to get the commit and branch data, so it doesn't need to be asynchronous.
+    Reads branch and commit data from `.git/HEAD`.
+    Called by: views.version()
     """
-
-    def __init__(self) -> None:
-        self.commit = ''
-        self.branch = ''
-
-    def manage_git_calls(self) -> None:
-        """
-        Triggers sequential version and commit preparation.
-        - Originally this class made two separate asynchronous subprocess calls to git.
-        - Now it reads the `.git/HEAD` file to get both the commit and branch data (to avoid the `dubious ownership` issues),
-          so it no longer benefits from asynchronous calls.
-        Called by views.version()
-        """
-        log.debug('manage_git_calls')
-        results_holder_dct = {}  # receives git responses as they're produced
-        self.fetch_commit_data(results_holder_dct)
-        self.fetch_branch_data(results_holder_dct)
-        log.debug(f'final results_holder_dct, ```{pprint.pformat(results_holder_dct)}```')
-        self.commit = results_holder_dct['commit']
-        self.branch = results_holder_dct['branch']
-        log.debug(f'self.branch, ``{self.branch}``')
-        return
-
-    def fetch_commit_data(self, results_holder_dct: dict[str, str]) -> None:
-        """
-        Fetches commit-data by reading the `.git/HEAD` file (avoiding calling git via subprocess due to `dubious ownership` issue).
-        Called by manage_git_calls()
-        """
-        log.debug('fetch_commit_data')
-        git_dir = pathlib.Path(settings.BASE_DIR) / '.git'
-        try:
-            ## read the HEAD file to find the current branch ------------
-            head_file: pathlib.Path = git_dir / 'HEAD'
-            ref_line: str = head_file.read_text().strip()
-            if ref_line.startswith('ref:'):
-                ref_path = ref_line.split(' ')[1]  # extract the ref path
-                commit_file: pathlib.Path = git_dir / ref_path
-                commit: str = commit_file.read_text().strip()
-            else:  # if it's a detached HEAD, the commit hash is directly in the HEAD file
-                commit: str = ref_line
-        except FileNotFoundError:
-            log.error('no `.git` directory or HEAD file found.')
-            commit = 'commit_not_found'
-        except Exception:
-            log.exception('other problem fetching commit data')
-            commit = 'commit_not_found'
-        log.debug(f'commit, ``{commit}``')
-        ## update holder --------------------------------------------
-        results_holder_dct['commit'] = commit
-        return
-
-    def fetch_branch_data(self, results_holder_dct: dict[str, str]) -> None:
-        """
-        Fetches branch-data by reading the `.git/HEAD` file (avoiding calling git via subprocess due to `dubious ownership` issue).
-        Called by manage_git_calls()
-        """
-        log.debug('fetch_branch_data')
-        git_dir = pathlib.Path(settings.BASE_DIR) / '.git'
-        try:
-            ## read the HEAD file to find the current branch ------------
-            head_file = git_dir / 'HEAD'
-            ref_line = head_file.read_text().strip()
-            if ref_line.startswith('ref:'):
-                branch = ref_line.split('/')[-1]  # extract the branch name
-            else:
-                branch = 'detached'
-        except FileNotFoundError:
-            log.error('no `.git` directory or HEAD file found.')
-            branch = 'branch_not_found'
-        except Exception:
-            log.exception('other problem fetching branch data')
-            branch = 'branch_not_found'
-        ## update holder --------------------------------------------
-        results_holder_dct['branch'] = branch
-        return
-
-
-## end class GatherCommitAndBranchData
+    log.debug('get_branch_and_commit()')
+    branch = 'branch_not_found'
+    commit = 'commit_not_found'
+    git_dir = pathlib.Path(settings.BASE_DIR) / '.git'
+    try:
+        ## read the HEAD file to find the current branch ------------
+        head_file: pathlib.Path = git_dir / 'HEAD'
+        ref_line: str = head_file.read_text().strip()
+        if ref_line.startswith('ref:'):
+            ref_path = ref_line.split(' ', maxsplit=1)[1]
+            branch = pathlib.Path(ref_path).name
+            commit_file: pathlib.Path = git_dir / ref_path
+            commit = commit_file.read_text().strip()
+        else:
+            branch = 'detached'
+            commit = ref_line
+    except FileNotFoundError:
+        log.error('no `.git` directory, HEAD file, or commit ref file found.')
+    except Exception:
+        log.exception('other problem fetching branch and commit data')
+    log.debug(f'branch, ``{branch}``; commit, ``{commit}``')
+    return branch, commit
