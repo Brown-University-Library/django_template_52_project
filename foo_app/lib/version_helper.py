@@ -11,30 +11,6 @@ log = logging.getLogger(__name__)
 BRANCH_AND_COMMIT_CACHE_SECONDS = 5
 
 
-def make_context(request, rq_now, info_txt):
-    """
-    Assembles data-dct.
-    Called by views.version()
-    """
-    context = {
-        'request': {
-            'url': '%s://%s%s'
-            % (
-                request.scheme,
-                request.META.get('HTTP_HOST', '127.0.0.1'),  # HTTP_HOST doesn't exist for client-tests
-                request.META.get('REQUEST_URI', request.META['PATH_INFO']),
-            ),
-            'timestamp': str(rq_now),
-        },
-        'response': {
-            'ip': request.META.get('REMOTE_ADDR', 'unknown'),
-            'version': info_txt,
-            'timetaken': str(datetime.datetime.now() - rq_now),
-        },
-    }
-    return context
-
-
 def get_branch_and_commit() -> tuple[str, str]:
     """
     Returns branch and commit data from cache or `.git/HEAD`.
@@ -96,3 +72,27 @@ def read_branch_and_commit(base_dir: pathlib.Path) -> tuple[str, str]:
         log.exception('other problem fetching branch and commit data')
     log.debug(f'branch, ``{branch}``; commit, ``{commit}``')
     return branch, commit
+
+
+def make_context(request, rq_now, info_txt):
+    """
+    Assembles data-dct.
+    Called by views.version()
+    """
+    context = {
+        'request': {
+            'url': '%s://%s%s'
+            % (
+                request.scheme,
+                request.META.get('HTTP_HOST', '127.0.0.1'),  # HTTP_HOST doesn't exist for client-tests
+                request.META.get('REQUEST_URI', request.META['PATH_INFO']),
+            ),
+            'timestamp': str(rq_now),
+        },
+        'response': {
+            'ip': request.META.get('REMOTE_ADDR', 'unknown'),
+            'version': info_txt,
+            'timetaken': str(datetime.datetime.now() - rq_now),
+        },
+    }
+    return context
