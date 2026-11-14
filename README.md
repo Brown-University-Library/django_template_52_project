@@ -5,10 +5,12 @@
 This is a template for new django projects -- to standardize on some nice features/practices, and to get up and running, locally, easily and quickly. It provides instructions for getting the template from GitHub, customizing it, starting the webapp, and lists a few things to try with the webapp running. Finally, it lists the nice features/practices, and also shows typical usage.
 
 on this page...
+
 - [local quick-start](#local-quick-start)
+- [regular usage](#regular-usage)
+- [database migrations](#database-migrations)
 - [stuff to try](#stuff-to-try)
 - [nice features/practices](#nice-featurespractices)
-- [regular setup](#regular-setup)
 
 --- 
 
@@ -19,13 +21,17 @@ Notes about the quick-start instructions...
 
 - The instructions below assume:
     - a unix-like environment (ie Mac, Linux, or Windows Subsystem for Linux (WSL)). 
-    - you've installed `uv` ([link][uv_link])
+    - you've installed `uv` 0.13.6 or newer ([link][uv_link]), which can obtain Python 3.12.16.
 
 - The instructions below reference `x_project_stuff`, `x_project`, and `x_app`. In all cases replace with the name of your project, like: `isbn_api_project_stuff`, `isbn_api_project`, and `isbn_api_app`.
 
 - The `update_project_and_app_references.py` script ([link](https://github.com/Brown-University-Library/django_template_52_project/blob/main/update_project_and_app_references.py)) deletes the cloned `.git` directory (in addition to its main purpose to rename the project). Why? So you don't accidentally start building away and commit to the template repo. After this installation, creating a new git repo is one of the first things you should do.
 
-- When you start the webapp via `runserver`, you'll get a message that there are migrations that need to be run, with instructions. You can do that later.
+- The same command updates the package name in `pyproject.toml` and `uv.lock`, plus the repository name in GitHub links. Links keep their existing GitHub owner; adjust that owner if your new repository lives elsewhere. The command only edits local files; it does not create a GitHub repository.
+
+- `uv sync --locked --group local` installs the versions recorded in `uv.lock` without upgrading them. It selects Python 3.12.16 or later within the 3.12 series, as required by `pyproject.toml`.
+
+- The setup below applies Django's existing migrations to create the initial database tables. With the supplied example settings, this uses a local SQLite database in `../DBs/`.
 
 ```bash
 ## setup directories
@@ -45,22 +51,16 @@ $ cd ./x_project/  # again, this will be the project-name you chose
 $ cp ./config/dotenv_example_file.txt ../.env
 
 ## make the venv
-$ uv sync --upgrade
+$ uv sync --locked --group local
+
+## create the initial database tables
+$ uv run ./manage.py migrate
 
 ## run the app
-$ uv run ./manage.py runserver  # you can ignore the migration-message for now
+$ uv run ./manage.py runserver
 ```
 
 That's it!
-
----
-
-About the migrations message -- again, you can do that later... Migrations are Django’s system for managing changes to your database schema. When you do run the migrations, do it like this:
-
-```bash
-$ cd ./x_project_stuff/x_project/  # again, use your stuff/project names
-$ uv run ./manage.py migrate  # calling migrate this way auto-activates the venv
-```
 
 [uv_link]: <https://docs.astral.sh/uv/getting-started/installation/>
 
@@ -75,6 +75,28 @@ After the above one-time setup, for ongoing development...
 $ cd ./x_project_stuff/x_project  # again, use your stuff/project names
 $ uv run ./manage.py runserver  # calling runserver this way auto-activates the venv
 ```
+
+---
+
+
+# database migrations
+
+Migrations are Python files that describe changes to database tables and fields. The template app has no models yet, but Django's built-in apps supply migrations for features such as users and sessions.
+
+Run the commands below from your project-code directory. Database commands use `DATABASES_JSON` from the outer `../.env`; the supplied example points to your local SQLite database.
+
+After adding or changing models:
+
+1. Run `uv run ./manage.py makemigrations x_app`, replacing `x_app` with your app name (`foo_app` in the unchanged template). This creates migration files in the app's `migrations/` directory; it does not apply database changes.
+2. Review the generated files. Run `uv run ./manage.py migrate --plan` to see pending operations without applying them.
+3. Run `uv run ./manage.py migrate` to apply the pending migrations to the configured database.
+4. Commit the migration files, including `migrations/__init__.py`, together with the corresponding model changes. Keep the existing migration history in Git so other checkouts can apply the same changes.
+
+After pulling code that already includes migrations, run `uv run ./manage.py migrate` to apply them. You only need `makemigrations` when creating migrations for your own model changes.
+
+To see which migrations have been applied, run `uv run ./manage.py showmigrations`; `[X]` marks an applied migration.
+
+See the [Django migration documentation](https://docs.djangoproject.com/en/5.2/topics/migrations/) for more detail.
 
 ---
 
@@ -96,7 +118,7 @@ $ uv run ./manage.py runserver  # calling runserver this way auto-activates the 
 
 - Try <http://127.0.0.1:8000/version/>. Once you `git init`, `git add --all`, and `git commit -am "initial commit"`, it'll show the branch and commit -- _very_ handy for dev and prod confirmations.
 
-- Try `$ uv run ./manage.py test`. There are two simple tests that should pass.
+- Try `$ uv run ./run_tests.py`. The tests should pass.
 
 - Check out the logs (`project_stuff/logs/`). The envar log-level is `DEBUG`, easily changed. On the servers that should be `INFO` or higher, and remember to rotate them, not via python's log-rotate -- but by the server's log-rotate.
 

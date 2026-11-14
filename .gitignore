@@ -5,4 +5,3 @@
 *.sqlite*
 *pycache*
 env
-migrations
