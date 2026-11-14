@@ -77,8 +77,8 @@ requires-dist = [
 [package.metadata.requires-dev]
 ci-tests = []
 local = []
-prod = [{ name = "mysqlclient", specifier = "~=2.2.0" }]
-staging = [{ name = "mysqlclient", specifier = "~=2.2.0" }]
+prod = [{ name = "mysqlclient", specifier = "==2.2.7" }]
+staging = [{ name = "mysqlclient", specifier = "==2.2.7" }]
 
 [[package]]
 name = "h11"

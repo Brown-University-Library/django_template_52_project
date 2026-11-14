@@ -14,9 +14,9 @@ dependencies = [
 [dependency-groups]
 local = []
 staging = [
-    "mysqlclient~=2.2.0",  # keep uv.lock at 2.2.7 for compatibility with older systems
+    "mysqlclient==2.2.7",  # exact pin for compatibility with older systems
     ]
 prod = [
-    "mysqlclient~=2.2.0",
+    "mysqlclient==2.2.7",
     ]
 ci_tests = []

@@ -29,7 +29,7 @@ Notes about the quick-start instructions...
 
 - The same command updates the package name in `pyproject.toml` and `uv.lock`, plus the repository name in GitHub links. Links keep their existing GitHub owner; adjust that owner if your new repository lives elsewhere. The command only edits local files; it does not create a GitHub repository.
 
-- `uv sync --locked --group local` installs the versions recorded in `uv.lock` without upgrading them. It selects Python 3.12.16 or later within the 3.12 series, as required by `pyproject.toml`.
+- For a new project, `uv sync --upgrade --group local` checks the package index for the newest versions allowed by `pyproject.toml`, updates `uv.lock`, and installs the local dependencies. The `~=major.minor.0` requirements allow patch updates within each chosen release series. MySQL's driver is deliberately pinned to `mysqlclient==2.2.7` for compatibility with older systems. uv selects Python 3.12.16 or later within the 3.12 series.
 
 - The setup below applies Django's existing migrations to create the initial database tables. With the supplied example settings, this uses a local SQLite database in `../DBs/`.
 
@@ -51,7 +51,7 @@ $ cd ./x_project/  # again, this will be the project-name you chose
 $ cp ./config/dotenv_example_file.txt ../.env
 
 ## make the venv
-$ uv sync --locked --group local
+$ uv sync --upgrade --group local
 
 ## create the initial database tables
 $ uv run ./manage.py migrate
@@ -70,6 +70,8 @@ That's it!
 # regular usage
 
 After the above one-time setup, for ongoing development...
+
+When setting up another checkout of an established project, run `uv sync --locked --group local` from its project-code directory to install the versions already recorded in `uv.lock` without upgrading them.
 
 ```bash
 $ cd ./x_project_stuff/x_project  # again, use your stuff/project names
