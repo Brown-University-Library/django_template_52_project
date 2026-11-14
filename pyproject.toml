@@ -2,20 +2,21 @@
 name = "django_template_52_project"
 version = "0.0.0"
 description = "Template for creatign new Django projects."
-readme = "https://github.com/Brown-University-Library/django_template_52_project/blob/main/README.md"
-requires-python = ">=3.12,<3.13"
+readme = "README.md"
+requires-python = ">=3.12.16,<3.13"
 dependencies = [
     "Django~=5.2.0",
+    "certifi>=2026.10.23",  # minimum certificate bundle version; allow newer releases
     "httpx~=0.28.0",  # no current http requests; but here cuz we're switching to this from `requests`
-    "python-dotenv~=1.1.0",
+    "python-dotenv~=1.2.0",
 ]
 
 [dependency-groups]
 local = []
-staging = [ 
-    "mysqlclient~=2.2.0",  # not yet used on dev, but useful to confirm installation
+staging = [
+    "mysqlclient~=2.2.0",  # keep uv.lock at 2.2.7 for compatibility with older systems
     ]
-prod = [ 
-    "mysqlclient~=2.2.0", 
+prod = [
+    "mysqlclient~=2.2.0",
     ]
 ci_tests = []
