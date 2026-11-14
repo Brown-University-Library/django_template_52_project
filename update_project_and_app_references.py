@@ -1,15 +1,18 @@
+#!/usr/bin/env python
 """
 Purpose:
-- Renames all project and app references from foo_project and foo_app to the desired project and app names.
+- Renames the template checkout, package metadata, repository links, and app references.
 
 Usage:
-$ python ./update_project_and_app_references.py --target_dir "/path/to/foo_project/" --new_project_name "bar_project" --new_app_name "bar_app"
+$ uv run ./update_project_and_app_references.py --target_dir "./django_template_52_project/" --new_project_name "bar_project" --new_app_name "bar_app"
 
 Note:
 - This script will delete the git-cloned `.git` directory in the target directory, so you can start a new git repository.
+- Repository links keep their existing GitHub owner; adjust it if your new repository uses a different owner.
 """
 
 import argparse
+import re
 import shutil
 from pathlib import Path, PosixPath
 
@@ -60,14 +63,20 @@ def rename_files_and_directories(target_directory: Path, new_project_name: str, 
 
 
 def update_file_contents(target_directory: Path, new_project_name: str, new_app_name: str) -> None:
+    """
+    Updates project names, package metadata, repository links, and app references.
+    Called by: run_updater()
+    """
+    normalized_project_name = re.sub(r'[-_.]+', '-', new_project_name).lower()
     for item in target_directory.rglob('*'):
         assert type(item) is PosixPath
         if item.is_file():
             if item.name == 'update_project_and_app_references.py':
                 continue
+            replace_in_file(item, REPO_PROJECT_NAME.replace('_', '-'), normalized_project_name)
+            replace_in_file(item, REPO_PROJECT_NAME, new_project_name)
             replace_in_file(item, OLD_PROJECT_NAME, new_project_name)
             replace_in_file(item, OLD_APP_NAME, new_app_name)
-    return
 
 
 def replace_in_file(file_path: Path, old_text: str, new_text: str) -> None:
@@ -81,7 +90,6 @@ def replace_in_file(file_path: Path, old_text: str, new_text: str) -> None:
         file_path.write_text(content, encoding='utf-8')
     except UnicodeDecodeError:
         pass  # skip files that can't be read as UTF-8
-    return
 
 
 def delete_git_directory(target_directory: Path) -> None:
@@ -96,7 +104,6 @@ def delete_git_directory(target_directory: Path) -> None:
             print(f'Deleted .git directory in ``{target_directory}``.')
     else:
         print(f'No .git directory found at ``{git_dir}``.')
-    return
 
 
 ## manager functions ------------------------------------------------
@@ -122,7 +129,6 @@ def parse_args() -> None:
         raise FileNotFoundError(f'Target directory ``{target_directory}`` does not exist.')
     ## run updater
     run_updater(target_directory, new_project_name, new_app_name)
-    return
 
 
 def run_updater(target_directory: Path, new_project_name: str, new_app_name: str) -> None:
@@ -139,7 +145,6 @@ def run_updater(target_directory: Path, new_project_name: str, new_app_name: str
     ## delete .git directory
     delete_git_directory(target_directory)
     print(f'Updated project and app references in ``{target_directory}`` to ``{new_project_name}`` and ``{new_app_name}``.')
-    return
 
 
 ## dundermain -------------------------------------------------------
